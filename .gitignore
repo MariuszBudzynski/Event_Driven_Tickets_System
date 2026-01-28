@@ -10,3 +10,10 @@
 /Tickets.Domain.Tests/obj
 /Tickets.Infrastructure/obj
 /Tickets.ReadModel/obj
+/Tickets.API/bin/Debug/net9.0
+/Tickets.Application/bin/Debug/net9.0
+/Tickets.Application.Tests/bin/Debug/net9.0
+/Tickets.Domain/bin/Debug/net9.0
+/Tickets.Domain.Tests/bin/Debug/net9.0
+/Tickets.Infrastructure/bin/Debug/net9.0
+/Tickets.ReadModel/bin/Debug/net9.0
