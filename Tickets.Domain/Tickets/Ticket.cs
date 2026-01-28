@@ -3,6 +3,15 @@ using Tickets.Domain.Events;
 
 namespace Tickets.Domain.Tickets
 {
+    /// <summary>
+    /// Represents a support ticket aggregate root.
+    /// 
+    /// The Ticket is responsible for enforcing all business rules related
+    /// to ticket lifecycle and state transitions.
+    /// 
+    /// All modifications to the ticket must go through this class.
+    /// </summary>
+    /// 
     public class Ticket
     {
         private readonly List<DomainEvent> _domainEvents = new();

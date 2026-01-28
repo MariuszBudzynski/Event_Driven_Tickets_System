@@ -1,5 +1,11 @@
 ﻿namespace Tickets.Domain.Tickets
 {
+    /// <summary>
+    /// Represents the lifecycle states of a ticket.
+    /// 
+    /// The status defines which operations are allowed
+    /// at any given point in time.
+    /// </summary>
     public enum TicketStatus
     {
         Draft = 0,
