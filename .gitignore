@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Tickets.API/obj
+/Tickets.Application/obj
+/Tickets.Application.Tests/obj
+/Tickets.Domain/obj
+/Tickets.Domain.Tests/obj
+/Tickets.Infrastructure/obj
+/Tickets.ReadModel/obj
