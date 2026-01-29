@@ -10,11 +10,12 @@ namespace Tickets.Domain.Tests
         public void Creating_ticket_with_empty_title_throws_exception()
         {
             // Arrange
+            var ticketId = Guid.NewGuid();
             var title = string.Empty;
             var description = "Desc";
 
             // Act
-            var action = () => new Ticket(title, description);
+            var action = () => new Ticket(ticketId,title, description);
 
             // Assert
             var ex = Assert.Throws<InvalidOperationException>(action);
@@ -25,9 +26,10 @@ namespace Tickets.Domain.Tests
         public void Ticket_is_created_correctly()
         {
             // Arrange
+            var ticketId = Guid.NewGuid();
             var title = "Test";
             var description = "Desc";
-            var ticket = new Ticket(title, description);
+            var ticket = new Ticket(ticketId, title, description);
 
             // Act & Assert
             Assert.Equal(title, ticket.Title);
@@ -40,9 +42,10 @@ namespace Tickets.Domain.Tests
         public void Ticket_is_submitted_correctly()
         {
             // Arrange
+            var ticketId = Guid.NewGuid();
             var title = "Test";
             var description = "Desc";
-            var ticket = new Ticket(title, description);
+            var ticket = new Ticket(ticketId, title, description);
 
             // Act
             ticket.Submit();
@@ -59,7 +62,8 @@ namespace Tickets.Domain.Tests
             var title = "Test";
             var description = "Desc";
             var exception = "Only draft tickets can be submitted";
-            var ticket = new Ticket(title, description);
+            var ticketId = Guid.NewGuid();
+            var ticket = new Ticket(ticketId, title, description);
             ticket.Status = TicketStatus.Submitted;
 
             // Act
@@ -76,7 +80,8 @@ namespace Tickets.Domain.Tests
             // Arrange
             var title = "Test";
             var description = "Desc";
-            var ticket = new Ticket(title, description);
+            var ticketId = Guid.NewGuid();
+            var ticket = new Ticket(ticketId, title, description);
             ticket.Status = TicketStatus.Submitted;
 
             // Act
@@ -94,7 +99,8 @@ namespace Tickets.Domain.Tests
             var title = "Test";
             var description = "Desc";
             var exception = "Only submitted tickets can be approved";
-            var ticket = new Ticket(title, description);
+            var ticketId = Guid.NewGuid();
+            var ticket = new Ticket(ticketId, title, description);
             ticket.Status = TicketStatus.Draft;
 
             // Act
@@ -112,7 +118,8 @@ namespace Tickets.Domain.Tests
             var title = "Test";
             var description = "Desc";
             var reason = "Test reason";
-            var ticket = new Ticket(title, description);
+            var ticketId = Guid.NewGuid();
+            var ticket = new Ticket(ticketId, title, description);
             ticket.Status = TicketStatus.Submitted;
 
             // Act
@@ -131,7 +138,8 @@ namespace Tickets.Domain.Tests
             var description = "Desc";
             var reason = "Test reason";
             var exception = "Only submitted tickets can be rejected";
-            var ticket = new Ticket(title, description);
+            var ticketId = Guid.NewGuid();
+            var ticket = new Ticket(ticketId, title, description);
             ticket.Status = TicketStatus.Draft;
 
             // Act
@@ -150,7 +158,8 @@ namespace Tickets.Domain.Tests
             var description = "Desc";
             var reason = string.Empty;
             var exception = "Rejection reason is required";
-            var ticket = new Ticket(title, description);
+            var ticketId = Guid.NewGuid();
+            var ticket = new Ticket(ticketId, title, description);
             ticket.Status = TicketStatus.Submitted;
 
             // Act
