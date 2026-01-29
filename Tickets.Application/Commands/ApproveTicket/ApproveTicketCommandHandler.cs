@@ -25,7 +25,7 @@ namespace Tickets.Application.Commands.ApproveTicket
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(
+        public async Task HandleAsync(
        ApproveTicketCommand command,
        CancellationToken cancellationToken)
         {

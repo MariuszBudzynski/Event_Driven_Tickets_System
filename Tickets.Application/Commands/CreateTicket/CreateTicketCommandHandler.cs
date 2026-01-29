@@ -23,7 +23,7 @@ namespace Tickets.Application.Commands.CreateTicket
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(
+        public async Task HandleAsync(
         CreateTicketCommand command,
         CancellationToken cancellationToken)
         {
