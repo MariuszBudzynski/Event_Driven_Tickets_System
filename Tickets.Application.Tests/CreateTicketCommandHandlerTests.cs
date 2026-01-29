@@ -13,18 +13,18 @@ namespace Tickets.Application.Tests
             var ticketId = Guid.NewGuid();
             var title = "Test";
             var description = "Desc";
-            var ticket = new Ticket(ticketId, title, description);
-            var repository = new FakeTicketRepository(ticket);
+            var repository = new FakeTicketRepositoryForCreate();
             var unitOfWork = new FakeUnitOfWork();
             var handler = new CreateTicketCommandHandler(
             repository,
             unitOfWork);
-            var command = new CreateTicketCommand(ticket.Id, ticket.Title, ticket.Description);
+            var command = new CreateTicketCommand(ticketId, title, description);
 
             //Act
             await handler.HandleAsync(command, CancellationToken.None);
 
             //Assert
+            Assert.True(repository.AddCalled);
             Assert.True(unitOfWork.CommitCalled);
         }
     }

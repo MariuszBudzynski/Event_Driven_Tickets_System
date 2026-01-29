@@ -12,7 +12,7 @@ namespace Tickets.Application.Tests
         {
             //Arrange
             var commandId = Guid.NewGuid();
-            var repository = new FakeTicketRepository(null);
+            var repository = new FakeTicketRepositoryForExistingTicket(null);
             var unitOfWork = new FakeUnitOfWork();
             var handler = new SubmitTicketCommandHandler(
             repository,
@@ -34,7 +34,7 @@ namespace Tickets.Application.Tests
             var title = "Test";
             var description = "Desc";
             var ticket = new Ticket(ticketId, title, description);
-            var repository = new FakeTicketRepository(ticket);
+            var repository = new FakeTicketRepositoryForExistingTicket(ticket);
             var unitOfWork = new FakeUnitOfWork();
             var handler = new SubmitTicketCommandHandler(
             repository,
@@ -46,6 +46,7 @@ namespace Tickets.Application.Tests
 
             //Assert
             Assert.True(unitOfWork.CommitCalled);
+            Assert.True(repository.GetByIdCalled);
         }
     }
 }
