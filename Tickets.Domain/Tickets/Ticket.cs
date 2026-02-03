@@ -12,16 +12,12 @@ namespace Tickets.Domain.Tickets
     /// All modifications to the ticket must go through this class.
     /// </summary>
     /// 
-    public class Ticket
+    public class Ticket : Entity
     {
-        private readonly List<DomainEvent> _domainEvents = new();
-
         public Guid Id { get; private set; }
         public string Title { get; private set; }
         public string Description { get; set; }
         public TicketStatus Status { get; set; }
-
-        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         private Ticket() { }
 
@@ -34,7 +30,7 @@ namespace Tickets.Domain.Tickets
             Title = title;
             Description = description;
             Status = TicketStatus.Draft;
-            AddEvent(new TicketCreatedEvent(Id));
+            AddDomainEvent(new TicketCreatedEvent(Id));
 
         }
 
@@ -44,7 +40,7 @@ namespace Tickets.Domain.Tickets
                 throw new InvalidOperationException("Only draft tickets can be submitted");
 
             Status = TicketStatus.Submitted;
-            AddEvent(new TicketSubmittedEvent(Id));
+            AddDomainEvent(new TicketSubmittedEvent(Id));
         }
 
         public void Approve()
@@ -53,7 +49,7 @@ namespace Tickets.Domain.Tickets
                 throw new InvalidOperationException("Only submitted tickets can be approved");
 
             Status = TicketStatus.Approved;
-            AddEvent(new TicketApprovedEvent(Id));
+            AddDomainEvent(new TicketApprovedEvent(Id));
         }
 
         public void Reject(string reason)
@@ -65,12 +61,7 @@ namespace Tickets.Domain.Tickets
                 throw new InvalidOperationException("Rejection reason is required");
 
             Status = TicketStatus.Rejected;
-            AddEvent(new TicketRejectedEvent(Id, reason));
-        }
-
-        private void AddEvent(DomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
+            AddDomainEvent(new TicketRejectedEvent(Id, reason));
         }
     }
 }

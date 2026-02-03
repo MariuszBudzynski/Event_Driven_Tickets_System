@@ -1,4 +1,5 @@
 ﻿using Tickets.Application.Abstractions;
+using Tickets.Domain.Abstractions;
 
 namespace Tickets.Infrastructure.Persistence
 {
@@ -19,6 +20,18 @@ namespace Tickets.Infrastructure.Persistence
         public async Task CommitAsync(CancellationToken cancellationToken)
         {
             await _context.SaveChangesAsync(cancellationToken);
+
+            var domainEvents = _context.ChangeTracker
+                .Entries<Entity>()
+                .SelectMany(e => e.Entity.DomainEvents)
+                .ToList();
+
+            foreach (var entry in _context.ChangeTracker.Entries<Entity>())
+            {
+                entry.Entity.ClearDomainEvents();
+            }
+
+            // Domain events publishing will be added later (Point 5)
         }
     }
 }
