@@ -11,10 +11,12 @@ namespace Tickets.Infrastructure.Persistence
     public sealed class UnitOfWork : IUnitOfWork
     {
         private readonly TicketsDbContext _context;
+        private readonly IDomainEventDispatcher _dispatcher;
 
-        public UnitOfWork(TicketsDbContext context)
+        public UnitOfWork(TicketsDbContext context, IDomainEventDispatcher dispatcher)
         {
             _context = context;
+            _dispatcher = dispatcher;
         }
 
         public async Task CommitAsync(CancellationToken cancellationToken)
@@ -31,7 +33,7 @@ namespace Tickets.Infrastructure.Persistence
                 entry.Entity.ClearDomainEvents();
             }
 
-            // Domain events publishing will be added later (Point 5)
+            await _dispatcher.DispatchAsync(domainEvents, cancellationToken);
         }
     }
 }
