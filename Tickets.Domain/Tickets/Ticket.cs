@@ -30,7 +30,7 @@ namespace Tickets.Domain.Tickets
             Title = title;
             Description = description;
             Status = TicketStatus.Draft;
-            AddDomainEvent(new TicketCreatedEvent(Id));
+            AddDomainEvent(new TicketCreatedEvent(Id,Title));
 
         }
 

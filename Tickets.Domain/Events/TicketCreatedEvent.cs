@@ -11,10 +11,12 @@ namespace Tickets.Domain.Events
     public sealed class TicketCreatedEvent : DomainEvent
     {
         public Guid TicketId { get;}
+        public string Title { get; }
 
-        public TicketCreatedEvent(Guid ticketId)
+        public TicketCreatedEvent(Guid ticketId, string title)
         {
             TicketId = ticketId;
+            Title = title;
         }
     }
 }

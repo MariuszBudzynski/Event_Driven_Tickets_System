@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickets.Domain.Tests", "Tic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickets.Infrastructure", "Tickets.Infrastructure\Tickets.Infrastructure.csproj", "{6322A4C9-1BB3-345F-324A-0574DDC9DE68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tickets.ReadModel", "Tickets.ReadModel\Tickets.ReadModel.csproj", "{DC272EB2-80F9-0443-B6A2-1668E37BE6FC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{6322A4C9-1BB3-345F-324A-0574DDC9DE68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6322A4C9-1BB3-345F-324A-0574DDC9DE68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6322A4C9-1BB3-345F-324A-0574DDC9DE68}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC272EB2-80F9-0443-B6A2-1668E37BE6FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC272EB2-80F9-0443-B6A2-1668E37BE6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC272EB2-80F9-0443-B6A2-1668E37BE6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC272EB2-80F9-0443-B6A2-1668E37BE6FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
