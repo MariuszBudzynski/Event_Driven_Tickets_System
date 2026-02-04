@@ -1,274 +1,91 @@
-** WORK IN PROGRESS ** 
-
-# 🧠 Event‑Driven Tickets System (CQRS + Read Models + Outbox)
-
-A backend‑only, enterprise‑style system built with **Event‑Driven Architecture**, **CQRS**, **Domain‑Driven Design**, and **Read Models**.  
-The goal of this project is to demonstrate a clean, testable, scalable architecture used in real production systems.
+# Event-Driven Tickets System (CQRS + Read Models)
+The project demonstrates a clean, testable, and scalable backend architecture focused on business logic, aggregates, domain events, and projections. It does not include UI or complex infrastructure.
 
 ---
 
-## 🎯 Project Goal
+## Project Goal
 
-> A backend system based on Event‑Driven Architecture and CQRS, separating Write and Read models, ensuring fault tolerance, eventual consistency, and a fully testable domain layer.
-
-This project intentionally focuses on **architecture**, not UI or infrastructure complexity.
+This system implements a clear separation of write and read models, enforces business rules in the domain, and propagates state changes through domain events.  
+It is fully testable, scalable, and designed to show how enterprise-grade architecture can be applied in backend systems. The focus is on correct handling of domain invariants, CQRS patterns, and eventual consistency.
 
 ---
 
-## 🏗️ Domain Overview
+## Domain Overview
 
-The domain represents a **Ticket / Request Management System** — simple enough to implement, but rich in rules and events.
+The domain models a Ticket Management System. Each Ticket has a status which can be Draft, Submitted, Approved, or Rejected. All business rules are enforced in the Ticket aggregate, and each meaningful state change raises a domain event. Domain events are immutable records of actions that have occurred and are used to update other parts of the system, including read models.
 
 ### Core Entities
 
-- `Ticket`
-- `Comment`
-- `User` (backend‑only)
-- `TicketStatus`  
-  - Draft  
-  - Submitted  
-  - Approved  
-  - Rejected
+- `Ticket` – the aggregate root handling business rules and state transitions.
+- `TicketStatus` – represents the current state of the Ticket.
+- Domain Events – `TicketCreatedEvent`, `TicketSubmittedEvent`, `TicketApprovedEvent`, `TicketRejectedEvent`.
 
-Why this domain?
-
-- realistic business rules  
-- natural event flow  
-- easy to extend  
-- perfect for CQRS + EDA  
+The domain layer does not contain persistence, repositories, or HTTP calls. Its sole responsibility is to enforce rules and emit events.
 
 ---
 
-## 📁 Solution Structure
+## Application Layer
 
-```
-EventDrivenTickets.sln
-│
-├── src
-│   ├── Tickets.API
-│   ├── Tickets.Application
-│   ├── Tickets.Domain
-│   ├── Tickets.Infrastructure
-│   └── Tickets.ReadModel
-│
-└── tests
-    ├── Tickets.Domain.Tests
-    └── Tickets.Application.Tests
-```
+The application layer coordinates domain logic and infrastructure. It contains commands, command handlers, repository interfaces, and UnitOfWork. Handlers are responsible for:
 
----
+- Loading aggregates from repositories.
+- Invoking domain operations.
+- Persisting changes via UnitOfWork.
+- Dispatching domain events to projections or other handlers.
 
-## 🧩 Layer Responsibilities
+Implemented commands:
 
-### 🟡 Domain Layer (`Tickets.Domain`)
+- `CreateTicketCommand` – creates a new ticket and raises `TicketCreatedEvent`.
+- `SubmitTicketCommand` – submits a draft ticket and raises `TicketSubmittedEvent`.
+- `ApproveTicketCommand` – approves a submitted ticket and raises `TicketApprovedEvent`.
+- `RejectTicketCommand` – rejects a submitted ticket with a reason and raises `TicketRejectedEvent`.
 
-**No EF Core. No HTTP. Pure business logic.**
-
-Contains:
-
-- Entities & Aggregates
-- Value Objects
-- Domain Events
-- Business Rules
-
-Example events:
-
-```csharp
-TicketSubmittedEvent
-TicketApprovedEvent
-TicketRejectedEvent
-```
-
-This is the **heart of the system**.
+Command handlers are fully tested using fakes for repositories and UnitOfWork. Custom exceptions such as `TicketNotFoundException` ensure meaningful error handling.
 
 ---
 
-### 🔵 Application Layer (`Tickets.Application`)
+## Read Model
 
-Implements CQRS using:
+The read side contains denormalized models optimized for queries. Ticket projections update read models in response to domain events. The read model layer contains:
 
-- Commands
-- Queries
-- Command Handlers
-- Event Handlers
-- Interfaces (Repository, Unit of Work)
+- `TicketReadModel` – stores ticket data for queries.
+- Projection handlers – handle domain events and update read models.
+- Interfaces – `ITicketReadRepository` abstracts persistence for read models.
 
-Examples:
-
-```csharp
-SubmitTicketCommand
-ApproveTicketCommand
-GetTicketDetailsQuery
-```
-
-Technologies:
-
-- MediatR  
-- FluentValidation  
-- CQRS pattern  
+The read model is fully separated from the domain and does not contain business rules.
 
 ---
 
-### 🟢 Infrastructure Layer (`Tickets.Infrastructure`)
+## Infrastructure Layer
 
-Responsible for:
+This layer provides repository and UnitOfWork implementations. Responsibilities include:
 
-- EF Core persistence
-- Repositories
-- Unit of Work
-- Outbox table
-- Background worker for event dispatching
+- Persisting aggregates to the database.
+- Handling transactional consistency.
+- Storing domain events for dispatching.
 
-This layer **stores domain events** and ensures reliable processing.
+The infrastructure layer currently supports synchronous in-memory event dispatching, but is designed to allow future implementation of the outbox pattern or background workers for asynchronous event processing.
 
 ---
 
-### 🟣 Read Model (`Tickets.ReadModel`)
+## Event Flow
 
-A separate schema/database optimized for queries.
+The flow of actions in the system:
 
-- Dapper
-- Projection Handlers
-- Denormalized read models
+1. A command is sent to an application handler.
+2. The handler loads the aggregate from a repository.
+3. Domain methods are invoked, changing state and raising events.
+4. The UnitOfWork commits changes to the database.
+5. Domain events are dispatched to read model projections.
 
-Examples:
-
-```csharp
-TicketListReadModel
-TicketDetailsReadModel
-```
-
-This separation dramatically improves performance and scalability.
+This ensures that the write side enforces rules and the read side eventually reflects the current state.
 
 ---
 
-### 🔴 API Layer (`Tickets.API`)
+## Testing Strategy
 
-- Controllers
-- Simple authentication (fake JWT)
-- Swagger documentation
+Testing focuses on ensuring correctness of domain logic and application coordination. This includes:
 
 ---
 
-## 🔄 Event Flow
-
-```
-HTTP Request
-  ↓
-Command
-  ↓
-Domain Entity
-  ↓
-Domain Event
-  ↓
-Outbox Table
-  ↓
-Background Worker
-  ↓
-Read Model Projection
-```
-
-This is the **core enterprise pattern**: reliable event processing + eventual consistency.
-
----
-
-## 🧠 CQRS Done Right
-
-### WRITE Model
-
-- EF Core
-- Transactions
-- Validation
-- Domain Events
-
-### READ Model
-
-- Dapper
-- Denormalized tables
-- Pagination & filtering
-- No EF Core ❌
-
----
-
-## 🧪 Testing Strategy
-
-Not 100% coverage — **smart coverage**.
-
-Focus on:
-
-- Domain rules
-- Command handlers
-- Event handlers
-
-Example domain tests:
-
-```
-TicketTests
-- cannot approve draft ticket
-- cannot submit without title
-```
-
----
-
-## 📦 Outbox Pattern (Advanced)
-
-Outbox table:
-
-```sql
-OutboxMessages
-- Id
-- Type
-- Payload
-- ProcessedAt
-```
-
-Background worker:
-
-- fetches unprocessed events  
-- publishes them to handlers  
-- retries failed events  
-- moves dead events to dead‑letter storage  
-
----
-
-## 📘 README Must‑Have Sections
-
-This repository includes:
-
-1. Architecture overview  
-2. Event flow explanation  
-3. CQRS design  
-4. Read model design  
-5. Trade‑offs & limitations  
-6. Future improvements  
-
----
-
-## 🚀 Development Roadmap
-
-### 1️⃣ Domain
-
-- Ticket aggregate  
-- Status transitions  
-- Domain events  
-
-### 2️⃣ Commands
-
-- Create  
-- Submit  
-- Approve / Reject  
-
-### 3️⃣ Outbox
-
-- event persistence  
-- background worker  
-
-### 4️⃣ Read Model
-
-- ticket list  
-- ticket details  
-
-### 5️⃣ Tests
-
-- domain first  
-- application next 
+This project demonstrates aggregate-centered design, strict enforcement of domain rules, explicit transaction boundaries via UnitOfWork, event-driven read models, and separation of concerns for a clean, maintainable backend architecture.
