@@ -84,7 +84,7 @@ This ensures that the write side enforces rules and the read side eventually ref
 
 ## Testing Strategy
 
-Testing focuses on ensuring correctness of domain logic and application coordination. This includes:
+Testing focuses on ensuring correctness of domain logic and application coordination.
 
 ---
 
